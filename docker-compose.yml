@@ -1,0 +1,62 @@
+# 개발 환경용 Docker Compose
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-dev
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data-dev:/var/lib/mysql
+
+
+  backend:
+    build: 
+      context: ./back
+      dockerfile: Dockerfile  # 개발용 Dockerfile
+    container_name: nest-backend-dev
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./back:/app
+      - /app/node_modules  # node_modules 충돌 방지
+    depends_on:
+      - mysql
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    command: npm run start:dev
+
+  frontend:
+    build: 
+      context: ./front
+      dockerfile: Dockerfile  # 개발용 Dockerfile
+    container_name: next-frontend-dev
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front:/app
+      - /app/node_modules  # node_modules 충돌 방지
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    command: npm run dev
+
+volumes:
+  mysql-data-dev:

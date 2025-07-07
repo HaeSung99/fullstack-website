@@ -1,0 +1,19 @@
+# 환경변수 파일들 - Git에 커밋하지 않음
+.env
+.env.*
+.env.local
+.env.*.local
+
+# 로그 파일
+*.log
+logs/
+
+# 업로드 파일
+uploads/
+
+# Docker 관련
+.dockerignore
+
+# 기타 민감한 정보
+secrets/
+private/
