@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
 
   // 이미 로그인된 사용자는 /admin으로 리다이렉트
   useEffect(() => {
-    axios.get(`${API_URL}/auth/me`, { withCredentials: true })
+    axios.get(`/api/auth/me`, { withCredentials: true })
       .then(() => {
         router.push("/admin");
       })
@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
     setError("");
     try {
       const res = await axios.post(
-        `${API_URL}/auth/login`,
+        `/api/auth/login`,
         { user_id, password },
         { withCredentials: true }
       );

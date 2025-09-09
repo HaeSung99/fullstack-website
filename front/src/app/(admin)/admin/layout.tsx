@@ -15,14 +15,14 @@ export default function AdminLayout({
   const router = useRouter();
 
   useEffect(() => {
-    axios.get(`${API_URL}/auth/me`, { withCredentials: true })
+    axios.get(`/api/auth/me`, { withCredentials: true })
       .then(() => setIsLoggedIn(true))
       .catch(() => setIsLoggedIn(false));
   }, []);
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+      await axios.post(`/api/auth/logout`, {}, { withCredentials: true });
       setIsLoggedIn(false);
       router.push('/admin/login');
     } catch (error) {
