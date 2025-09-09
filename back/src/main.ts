@@ -18,6 +18,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   app.use(cookieParser());
+  app.set('trust proxy', 1);
   
   app.enableCors({
     origin: process.env.FRONTEND_URL,
