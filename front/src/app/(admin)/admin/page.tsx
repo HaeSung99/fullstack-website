@@ -19,7 +19,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useRouter } from "next/navigation";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "/api",
   headers: {
     'Content-Type': 'application/json',
   },
@@ -263,7 +263,7 @@ export default function AdminPage() {
       <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="border rounded-lg p-4 flex justify-between items-center bg-white mb-2">
         <div className="flex items-center gap-4">
           {member.image && (
-            <img src={`${process.env.NEXT_PUBLIC_API_URL}${member.image}`} alt={member.name} className="w-12 h-12 rounded-full object-cover" />
+            <img src={`/api${member.image}`} alt={member.name} className="w-12 h-12 rounded-full object-cover" />
           )}
           <div>
             <div className="font-bold">{member.name}</div>
@@ -927,7 +927,7 @@ export default function AdminPage() {
                       {sportsClassForm.imageUrl && !sportsClassForm.image && (
                         <div className="mt-2 mb-4">
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_URL}${sportsClassForm.imageUrl}`}
+                            src={`/api${sportsClassForm.imageUrl}`}
                             alt="현재 이미지"
                             className="w-24 h-24 object-cover rounded"
                           />
@@ -1017,7 +1017,7 @@ export default function AdminPage() {
                             {sportsClass.image && (
                               <div className="w-24 h-24 flex-shrink-0">
                                 <img
-                                  src={`${process.env.NEXT_PUBLIC_API_URL}${sportsClass.image}`}
+                                  src={`/api${sportsClass.image}`}
                                   alt={sportsClass.title}
                                   className="w-full h-full object-cover rounded"
                                 />
@@ -1254,7 +1254,7 @@ export default function AdminPage() {
                       {teamForm.imageUrl && !teamForm.image && (
                         <div className="mt-2 mb-4">
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_URL}${teamForm.imageUrl}`}
+                            src={`/api${teamForm.imageUrl}`}
                             alt="현재 이미지"
                             className="w-24 h-24 object-cover rounded"
                           />

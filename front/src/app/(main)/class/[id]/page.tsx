@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "/api",
   headers: {
     'Content-Type': 'application/json',
   },
@@ -237,7 +237,7 @@ export default function ClassDetailPage() {
             {sportsClass.image && (
               <div className="w-full flex justify-center items-center bg-gray-100" style={{ minHeight: 270 }}>
                 <img
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${sportsClass.image}`}
+                  src={`/api${sportsClass.image}`}
                   alt={sportsClass.title}
                   className="object-cover rounded-lg max-w-xl w-full h-auto max-h-[360px]"
                   style={{ maxWidth: 480, maxHeight: 360 }}

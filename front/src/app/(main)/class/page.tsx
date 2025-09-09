@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "/api",
   headers: {
     'Content-Type': 'application/json',
   },
@@ -188,7 +188,7 @@ export default function ClassPage() {
                   {item.image && (
                     <div className="aspect-w-16 aspect-h-9">
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_URL}${item.image}`}
+                        src={`/api${item.image}`}
                         alt={item.title}
                         className="object-cover w-full h-48"
                       />

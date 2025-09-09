@@ -35,7 +35,7 @@ if (typeof window !== 'undefined') {
 }
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "/api",
   headers: {
     'Content-Type': 'application/json',
   },
@@ -112,7 +112,7 @@ export default function Team() {
                       <div className="aspect-w-3 aspect-h-2 w-full flex items-center justify-center">
                         <img
                           className="w-40 h-40 object-cover rounded-full mx-auto mt-8 mb-4"
-                          src={member.image?.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_URL}${member.image}` : member.image}
+                          src={member.image?.startsWith('/') ? `/api${member.image}` : member.image}
                           alt={member.name}
                         />
                       </div>

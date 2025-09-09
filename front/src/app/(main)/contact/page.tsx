@@ -19,7 +19,7 @@ export default function Contact() {
   const [submitMsg, setSubmitMsg] = useState('');
   const [error, setError] = useState('');
   const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL: "/api",
     headers: { 'Content-Type': 'application/json' },
   });
 
