@@ -1,46 +1,14 @@
-# 백엔드 배포용 Dockerfile
-# 멀티스테이지 빌드로 최적화
-
-# 빌드 스테이지
-FROM node:20-alpine AS builder
+FROM node:22-alpine
 
 WORKDIR /app
 
 # 의존성 설치
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci
 
-# 소스 코드 복사 및 빌드
+# 소스 복사 및 빌드
 COPY . .
 RUN npm run build
 
-# 프로덕션 스테이지
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-# 보안을 위한 non-root 사용자 생성
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nestjs -u 1001
-
-# 필요한 파일만 복사
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./package.json
-
-# 사용자 권한 설정
-USER nestjs
-
-# 환경 변수 설정
-ENV NODE_ENV=production
-ENV PORT=4000
-
-# 헬스 체크를 위한 curl 설치
-USER root
-RUN apk --no-cache add curl
-USER nestjs
-
 EXPOSE 4000
-
-# 프로덕션 실행
-CMD ["node", "dist/main.js"] 
+CMD ["node", "dist/main.js"]

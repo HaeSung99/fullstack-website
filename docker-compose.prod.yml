@@ -2,52 +2,30 @@ version: "3.9"
 
 services:
   backend:
-    # 운영에서는 로컬 빌드 대신 ECR 이미지를 가져옵니다.
-    # 👉 ECR Repository URI: AWS ECR에서 확인 가능
-    # 예시: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/lostparty-backend:prod-<SHA>
-    # image: ${ECR_ACCOUNT}.dkr.ecr.ap-northeast-2.amazonaws.com/lostparty-backend:${IMAGE_TAG}
-
+    build:
+      context: ./back
+      dockerfile: Dockerfile.prod
     restart: unless-stopped
     ports:
-      - "4000:4000"   # ALB Target Group이 이 포트로 붙음 (EC2 보안그룹은 ALB SG만 허용)
-
+      - "4000:4000"
     environment:
-      NODE_ENV: ${NODE_ENV}
-
-      # 👉 RDS(MySQL) 연결 정보 (AWS RDS 콘솔에서 엔드포인트/포트/사용자 설정)
-      DB_HOST: ${DB_HOST}        # 예: mydb.abcdefg.ap-northeast-2.rds.amazonaws.com
-      DB_PORT: ${DB_PORT}        # 기본 3306
-      DB_USER: ${DB_USERNAME}        # RDS 생성 시 만든 유저
-      DB_PASSWORD: ${DB_PASSWORD}# RDS 유저 비밀번호
-      DB_NAME: ${DB_NAME}        # 사용할 데이터베이스 이름
-
-    healthcheck:
-      # 👉 NestJS에 /health 엔드포인트 구현 필요
-      test: ["CMD", "curl", "-f", "http://localhost:4000/admin/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
 
   frontend:
-    # 운영 프론트엔드도 빌드하지 않고 ECR 이미지 사용
-    # 👉 ECR Repository URI: AWS ECR에서 확인 가능
-    # image: ${ECR_ACCOUNT}.dkr.ecr.ap-northeast-2.amazonaws.com/lostparty-frontend:${IMAGE_TAG}
-
+    build:
+      context: ./front
+      dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
     restart: unless-stopped
     ports:
-      - "3000:3000"   # ALB Target Group이 이 포트로 붙음
-
+      - "3000:3000"
     environment:
-      NODE_ENV: ${NODE_ENV}
-      NEXT_TELEMETRY_DISABLED: 1
-
-      # 👉 프론트엔드가 API를 호출할 주소
-      # ALB + ACM(HTTPS) + Route53(도메인) 조합에서 최종 주소 사용
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
       NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
-      # 예: https://lostparty.com/api
-
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3

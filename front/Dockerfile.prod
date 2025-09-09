@@ -1,56 +1,12 @@
-# 프론트엔드 배포용 Dockerfile
-# Next.js 최적화된 멀티스테이지 빌드
-
-# 의존성 설치 스테이지
-FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat
+FROM node:22-alpine
 
 WORKDIR /app
 
-# 의존성 파일 복사 및 설치
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci
 
-# 빌드 스테이지
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# 의존성 복사
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Next.js 설정 확인 및 빌드
 RUN npm run build
 
-# 프로덕션 스테이지
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-# 보안을 위한 non-root 사용자 생성
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-# 필요한 파일만 복사
-COPY --from=builder /app/public ./public
-
-# Next.js standalone 빌드 결과물 복사
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# 헬스 체크를 위한 curl 설치
-RUN apk --no-cache add curl
-
-# 사용자 권한 설정
-USER nextjs
-
-# 환경 변수 설정
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV NEXT_TELEMETRY_DISABLED=1
-
 EXPOSE 3000
-
-# 프로덕션 실행
-CMD ["node", "server.js"] 
+CMD ["npm", "start"]
