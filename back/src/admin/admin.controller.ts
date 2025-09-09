@@ -214,4 +214,11 @@ export class AdminController {
   updateContact(@Param('id') id: number, @Body() body: Partial<Contact>) {
     return this.adminService.updateContact(id, body);
   }
+
+  //임시 health check
+  @Get('health')
+  gethealth(){
+    return "health check"
+  }
 }
+
